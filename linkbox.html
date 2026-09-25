@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>جعبه لینک</title>
+<style>
+:root{
+  --bg:#f7f6f2;
+  --surface:#ffffff;
+  --ink:#232323;
+  --muted:#7a7873;
+  --line:#e6e3db;
+  --accent:#3f6b5e;
+  --accent-ink:#ffffff;
+  --danger:#a24b3f;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#1b1c19; --surface:#242521; --ink:#f0efe9; --muted:#9b988f; --line:#38392f; --accent:#5c9683; --accent-ink:#10120f; --danger:#d97a68;
+  }
+}
+*{box-sizing:border-box;}
+html,body{height:100%;}
+html{scroll-padding-top:env(safe-area-inset-top,0px);}
+body{
+  margin:0;
+  background:var(--bg);
+  color:var(--ink);
+  font-family:"Vazirmatn","Segoe UI",Tahoma,sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+header{
+  position:sticky; top:0;
+  padding:calc(14px + env(safe-area-inset-top,0px)) 16px 14px;
+  background:var(--bg);
+  border-bottom:1px solid var(--line);
+  display:flex; align-items:center; justify-content:space-between; gap:10px;
+  z-index:10;
+}
+.brand{display:flex; align-items:center; gap:10px; min-width:0;}
+.brand .dot{width:10px;height:10px;border-radius:50%;background:var(--accent);flex:none;}
+.brand h1{font-size:16px; margin:0; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+.userbtn{
+  font-size:13px; color:var(--muted); background:var(--surface); border:1px solid var(--line);
+  border-radius:10px; padding:7px 12px; white-space:nowrap;
+}
+main{padding:16px; max-width:640px; margin:0 auto; padding-bottom:100px;}
+.crumbs{display:flex; align-items:center; gap:8px; margin-bottom:14px; font-size:13px; color:var(--muted);}
+.crumbs button{background:none;border:none;color:var(--accent);font-size:13px;padding:4px 0;cursor:pointer;}
+.grid{display:grid; grid-template-columns:repeat(auto-fill,minmax(108px,1fr)); gap:12px;}
+.tile{
+  background:var(--surface); border:1px solid var(--line); border-radius:14px;
+  padding:16px 10px; display:flex; flex-direction:column; align-items:center; gap:8px;
+  cursor:pointer; text-align:center; min-height:92px; justify-content:center;
+  transition:transform .12s ease, border-color .12s ease;
+}
+.tile:active{transform:scale(0.96);}
+.tile .name{font-size:13px; word-break:break-word; line-height:1.3;}
+.tile .icon{font-size:22px;}
+.tile-add{border-style:dashed; color:var(--accent); border-color:var(--accent);}
+.tile-add .icon{font-size:26px; line-height:1;}
+.linkrow{
+  background:var(--surface); border:1px solid var(--line); border-radius:12px;
+  padding:12px 14px; margin-bottom:10px; display:flex; align-items:center; justify-content:space-between; gap:10px;
+}
+.linkrow a{color:var(--ink); text-decoration:none; font-size:14px; font-weight:600; display:block;}
+.linkrow .url{color:var(--muted); font-size:12px; margin-top:3px; direction:ltr; text-align:right; word-break:break-all;}
+.linkrow .del{background:none; border:none; color:var(--muted); font-size:18px; cursor:pointer; padding:4px 6px; flex:none;}
+.addtile{
+  width:100%; background:var(--surface); border:1px dashed var(--accent); color:var(--accent);
+  border-radius:12px; padding:12px 14px; font-size:14px; cursor:pointer; margin-bottom:14px;
+}
+.panel{
+  background:var(--surface); border:1px solid var(--line); border-radius:14px; padding:16px; margin-bottom:14px;
+}
+.panel h3{margin:0 0 10px; font-size:14px;}
+.field{margin-bottom:10px;}
+.field label{display:block; font-size:12px; color:var(--muted); margin-bottom:5px;}
+.field input, .field select{
+  width:100%; padding:10px 12px; border:1px solid var(--line); border-radius:10px; background:var(--bg); color:var(--ink); font-size:14px;
+}
+.rowbtns{display:flex; gap:8px; margin-top:10px;}
+.btn{
+  flex:1; padding:11px; border-radius:10px; border:none; font-size:14px; cursor:pointer; font-weight:600;
+}
+.btn-primary{background:var(--accent); color:var(--accent-ink);}
+.btn-ghost{background:var(--bg); color:var(--ink); border:1px solid var(--line);}
+.section-title{font-size:13px; color:var(--muted); margin:22px 0 10px;}
+.empty{color:var(--muted); font-size:13px; text-align:center; padding:26px 10px;}
+footer.nav{
+  position:fixed; bottom:0; left:0; right:0;
+  background:var(--surface); border-top:1px solid var(--line);
+  padding:8px 16px calc(8px + env(safe-area-inset-bottom,0px));
+  display:flex; justify-content:center; gap:24px;
+}
+footer.nav button{
+  background:none; border:none; color:var(--muted); font-size:12px; display:flex; flex-direction:column; align-items:center; gap:3px; cursor:pointer;
+}
+footer.nav button.active{color:var(--accent);}
+footer.nav .ic{font-size:18px;}
+.hidden{display:none !important;}
+.userlist{display:flex; flex-direction:column; gap:8px; margin-bottom:14px;}
+.userchip{
+  display:flex; align-items:center; justify-content:space-between; padding:10px 12px; border:1px solid var(--line); border-radius:10px; background:var(--bg); cursor:pointer;
+}
+.userchip.active{border-color:var(--accent); background:var(--surface);}
+.userchip .uname{font-size:14px;}
+.userchip .utag{font-size:11px; color:var(--muted);}
+.note{font-size:12px; color:var(--muted); line-height:1.7;}
+</style>
+</head>
+<body>
+<header>
+  <div class="brand"><span class="dot"></span><h1 id="pageTitle">جعبه لینک</h1></div>
+  <button class="userbtn" id="userBtn">کاربر: ...</button>
+</header>
+
+<main>
+
+  <!-- FOLDERS VIEW -->
+  <div id="viewFolders">
+    <div class="grid" id="folderGrid"></div>
+  </div>
+
+  <!-- LINKS VIEW -->
+  <div id="viewLinks" class="hidden">
+    <div class="crumbs"><button id="backBtn">◂ بازگشت</button><span id="folderName"></span></div>
+    <button class="addtile" id="addLinkToggle">+ افزودن لینک</button>
+    <div class="panel hidden" id="addLinkPanel">
+      <div class="field"><label>موضوع</label><input id="linkTitle" placeholder="مثلاً: پلی‌لیست موسیقی"></div>
+      <div class="field"><label>لینک</label><input id="linkUrl" placeholder="https://..." dir="ltr"></div>
+      <div class="rowbtns">
+        <button class="btn btn-primary" id="saveLinkBtn">ثبت</button>
+        <button class="btn btn-ghost" id="cancelLinkBtn">انصراف</button>
+      </div>
+    </div>
+    <div id="linkList"></div>
+  </div>
+
+  <!-- BACKUP VIEW -->
+  <div id="viewBackup" class="hidden">
+    <div class="panel">
+      <h3>گرفتن بکاپ</h3>
+      <p class="note">یک فایل JSON از حساب فعلی («<span id="bkUserName"></span>») ساخته می‌شود. همین فایل را می‌توانید از طریق تلگرام یا روبیکا بین گوشی و کامپیوتر بفرستید.</p>
+      <button class="btn btn-primary" id="exportBtn" style="width:100%;margin-top:8px;">دانلود فایل بکاپ</button>
+    </div>
+
+    <div class="panel">
+      <h3>بازگردانی بکاپ</h3>
+      <div class="field"><label>انتخاب فایل بکاپ</label><input type="file" id="importFile" accept="application/json"></div>
+      <div class="field">
+        <label>نحوه بازگردانی</label>
+        <select id="importMode">
+          <option value="new">افزودن به‌عنوان کاربر جدید</option>
+          <option value="replace">جایگزینی کامل حساب فعلی</option>
+        </select>
+      </div>
+      <button class="btn btn-primary" id="importBtn" style="width:100%;">اجرای بازگردانی</button>
+      <p class="note" id="importMsg" style="margin-top:8px;"></p>
+    </div>
+
+    <div class="section-title">حساب‌های کاربری</div>
+    <div class="userlist" id="userList"></div>
+    <button class="btn btn-ghost" id="newUserBtn" style="width:100%;">+ ساخت حساب جدید (خالی)</button>
+  </div>
+
+</main>
+
+<footer class="nav">
+  <button id="navHome" class="active"><span class="ic">🗂️</span>فولدرها</button>
+  <button id="navBackup"><span class="ic">💾</span>بکاپ</button>
+</footer>
+
+<script>
+const DB_KEY = "linkbox_users_v1";
+const CUR_KEY = "linkbox_current_v1";
+let db, currentUserId, currentFolderId = null;
+
+function uid(){ return Date.now().toString(36)+Math.random().toString(36).slice(2,7); }
+
+function loadDB(){
+  try{
+    const raw = localStorage.getItem(DB_KEY);
+    db = raw ? JSON.parse(raw) : {};
+  }catch(e){ db = {}; }
+  if(Object.keys(db).length === 0){
+    const id = uid();
+    db[id] = { name:"حساب من", folders:[] };
+    localStorage.setItem(DB_KEY, JSON.stringify(db));
+  }
+  currentUserId = localStorage.getItem(CUR_KEY);
+  if(!currentUserId || !db[currentUserId]){
+    currentUserId = Object.keys(db)[0];
+    localStorage.setItem(CUR_KEY, currentUserId);
+  }
+}
+function saveDB(){ localStorage.setItem(DB_KEY, JSON.stringify(db)); }
+function setCurrentUser(id){ currentUserId = id; localStorage.setItem(CUR_KEY, id); render(); }
+function curUser(){ return db[currentUserId]; }
+
+// ---------- rendering ----------
+function render(){
+  document.getElementById('userBtn').textContent = "کاربر: " + curUser().name;
+  renderFolders();
+  renderBackupUsers();
+}
+
+function showView(name){
+  document.getElementById('viewFolders').classList.toggle('hidden', name!=='folders');
+  document.getElementById('viewLinks').classList.toggle('hidden', name!=='links');
+  document.getElementById('viewBackup').classList.toggle('hidden', name!=='backup');
+  document.getElementById('navHome').classList.toggle('active', name==='folders'||name==='links');
+  document.getElementById('navBackup').classList.toggle('active', name==='backup');
+  document.getElementById('pageTitle').textContent = name==='backup' ? 'بکاپ و حساب‌ها' : 'جعبه لینک';
+}
+
+function renderFolders(){
+  const grid = document.getElementById('folderGrid');
+  grid.innerHTML = '';
+  curUser().folders.forEach(f=>{
+    const t = document.createElement('div');
+    t.className = 'tile';
+    t.innerHTML = `<span class="icon">📁</span><span class="name">${escapeHtml(f.name)}</span>`;
+    t.onclick = ()=>openFolder(f.id);
+    grid.appendChild(t);
+  });
+  const add = document.createElement('div');
+  add.className = 'tile tile-add';
+  add.innerHTML = `<span class="icon">＋</span><span class="name">فولدر جدید</span>`;
+  add.onclick = ()=>{
+    const name = prompt('نام فولدر را وارد کنید:');
+    if(name && name.trim()){
+      curUser().folders.push({id:uid(), name:name.trim(), links:[]});
+      saveDB(); renderFolders();
+    }
+  };
+  grid.appendChild(add);
+}
+
+function openFolder(id){
+  currentFolderId = id;
+  const f = curUser().folders.find(x=>x.id===id);
+  document.getElementById('folderName').textContent = f.name;
+  document.getElementById('addLinkPanel').classList.add('hidden');
+  document.getElementById('linkTitle').value='';
+  document.getElementById('linkUrl').value='';
+  renderLinks();
+  showView('links');
+}
+
+function renderLinks(){
+  const f = curUser().folders.find(x=>x.id===currentFolderId);
+  const list = document.getElementById('linkList');
+  list.innerHTML = '';
+  if(!f.links.length){
+    list.innerHTML = '<div class="empty">هنوز لینکی اضافه نشده</div>';
+    return;
+  }
+  f.links.forEach(l=>{
+    const row = document.createElement('div');
+    row.className = 'linkrow';
+    row.innerHTML = `<div style="min-width:0;">
+        <a href="${escapeAttr(l.url)}" target="_blank" rel="noopener">${escapeHtml(l.title)}</a>
+        <div class="url">${escapeHtml(l.url)}</div>
+      </div>
+      <button class="del" data-id="${l.id}">✕</button>`;
+    row.querySelector('.del').onclick = ()=>{
+      f.links = f.links.filter(x=>x.id!==l.id);
+      saveDB(); renderLinks();
+    };
+    list.appendChild(row);
+  });
+}
+
+function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+function escapeAttr(s){ return escapeHtml(s); }
+
+// ---------- link add ----------
+document.getElementById('addLinkToggle').onclick = ()=>{
+  document.getElementById('addLinkPanel').classList.toggle('hidden');
+};
+document.getElementById('cancelLinkBtn').onclick = ()=>{
+  document.getElementById('addLinkPanel').classList.add('hidden');
+};
+document.getElementById('saveLinkBtn').onclick = ()=>{
+  const title = document.getElementById('linkTitle').value.trim();
+  const url = document.getElementById('linkUrl').value.trim();
+  if(!title || !url){ alert('موضوع و لینک را وارد کنید'); return; }
+  const f = curUser().folders.find(x=>x.id===currentFolderId);
+  f.links.push({id:uid(), title, url});
+  saveDB();
+  document.getElementById('linkTitle').value='';
+  document.getElementById('linkUrl').value='';
+  document.getElementById('addLinkPanel').classList.add('hidden');
+  renderLinks();
+};
+document.getElementById('backBtn').onclick = ()=>{ currentFolderId=null; showView('folders'); };
+
+// ---------- nav ----------
+document.getElementById('navHome').onclick = ()=>{ currentFolderId=null; showView('folders'); };
+document.getElementById('navBackup').onclick = ()=>{ showView('backup'); };
+document.getElementById('userBtn').onclick = ()=>{ showView('backup'); };
+
+// ---------- backup / users ----------
+function renderBackupUsers(){
+  document.getElementById('bkUserName').textContent = curUser().name;
+  const list = document.getElementById('userList');
+  list.innerHTML = '';
+  Object.keys(db).forEach(id=>{
+    const u = db[id];
+    const chip = document.createElement('div');
+    chip.className = 'userchip' + (id===currentUserId ? ' active' : '');
+    chip.innerHTML = `<span class="uname">${escapeHtml(u.name)}</span><span class="utag">${u.folders.length} فولدر ${id===currentUserId?'· فعال':''}</span>`;
+    chip.onclick = ()=>{
+      if(id!==currentUserId) setCurrentUser(id);
+    };
+    list.appendChild(chip);
+  });
+}
+
+document.getElementById('newUserBtn').onclick = ()=>{
+  const name = prompt('نام حساب جدید:', 'حساب جدید');
+  if(name && name.trim()){
+    const id = uid();
+    db[id] = { name:name.trim(), folders:[] };
+    saveDB();
+    setCurrentUser(id);
+  }
+};
+
+document.getElementById('exportBtn').onclick = ()=>{
+  const payload = { app:'linkbox', version:1, exportedAt:new Date().toISOString(), user: curUser() };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  const safeName = curUser().name.replace(/[^\w\u0600-\u06FF-]+/g,'_') || 'user';
+  a.download = `linkbox_backup_${safeName}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+};
+
+document.getElementById('importBtn').onclick = ()=>{
+  const fileInput = document.getElementById('importFile');
+  const mode = document.getElementById('importMode').value;
+  const msg = document.getElementById('importMsg');
+  if(!fileInput.files.length){ msg.textContent = 'یک فایل انتخاب کنید.'; return; }
+  const reader = new FileReader();
+  reader.onload = ()=>{
+    try{
+      const parsed = JSON.parse(reader.result);
+      const userData = parsed && parsed.user ? parsed.user : parsed;
+      if(!userData || !Array.isArray(userData.folders)){
+        msg.textContent = 'فایل بکاپ معتبر نیست.';
+        return;
+      }
+      if(mode === 'replace'){
+        db[currentUserId] = { name: userData.name || curUser().name, folders: userData.folders };
+        saveDB();
+        msg.textContent = 'حساب فعلی با موفقیت جایگزین شد.';
+      } else {
+        const id = uid();
+        db[id] = { name: (userData.name || 'کاربر بازیابی‌شده'), folders: userData.folders };
+        saveDB();
+        setCurrentUser(id);
+        msg.textContent = 'حساب جدید از روی بکاپ ساخته و فعال شد.';
+      }
+      fileInput.value = '';
+      render();
+    }catch(e){
+      msg.textContent = 'خطا در خواندن فایل — فایل JSON معتبر نیست.';
+    }
+  };
+  reader.readAsText(fileInput.files[0]);
+};
+
+// ---------- init ----------
+loadDB();
+render();
+showView('folders');
+</script>
+</body>
+</html>
